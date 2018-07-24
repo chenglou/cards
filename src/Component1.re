@@ -201,8 +201,8 @@ let make = _children => {
     let (p1Scale, p2Scale) =
       switch (state.grow, state.lastDrag) {
       | (false, _) => (1., 1.)
-      | (true, (Two, _)) => (1., 1.1)
-      | (true, (One, _)) => (1.1, 1.)
+      | (true, (Two, _)) => (1., 1.12)
+      | (true, (One, _)) => (1.12, 1.)
       };
     let draggingOffset =
       switch (state.currentDrag, state.lastDrag) {
