@@ -489,7 +489,7 @@ let make = _children => {
             (),
           )
         )>
-        <div>(ReasonReact.string("Only works on desktop for now"))</div>
+        <div>(ReasonReact.string("Only works on desktop. Drag the pictures around!"))</div>
         <p></p>
         (makeToggle(state.glow, ToggleGlow, "Back glow (self shadow)"))
         (
