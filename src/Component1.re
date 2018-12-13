@@ -1,16 +1,16 @@
 /* TODO: fix zoom then drag */
 /* TODO: fix drag outside and back and release wrong coordinates */
-[@bs.val] external window : Dom.window = "";
-[@bs.val] external document : Dom.document = "";
+[@bs.val] external window: Dom.window = "";
+[@bs.val] external document: Dom.document = "";
 [@bs.send]
-external addEventListener : (Dom.window, string, 'event => unit) => unit = "";
-[@bs.get] external outerWidth : Dom.window => float = "";
-[@bs.get] external outerHeight : Dom.window => float = "";
+external addEventListener: (Dom.window, string, 'event => unit) => unit = "";
+[@bs.get] external outerWidth: Dom.window => float = "";
+[@bs.get] external outerHeight: Dom.window => float = "";
 /* sensitive to zoom */
-[@bs.get] external innerWidth : Dom.window => float = "";
+[@bs.get] external innerWidth: Dom.window => float = "";
 [@bs.send]
-external getElementById : (Dom.document, string) => option(Dom.element) = "";
-[@bs.send] external contains : (Js.t({..}), 'target) => bool = "";
+external getElementById: (Dom.document, string) => option(Dom.element) = "";
+[@bs.send] external contains: (Js.t({..}), 'target) => bool = "";
 
 type coords = {
   x: float,
@@ -125,36 +125,36 @@ let make = _children => {
             ...state,
             lastDrag: (pane, a),
             currentDrag: None,
-            p1PermaOffset: offset |. addCoords(state.p1PermaOffset),
+            p1PermaOffset: offset->(addCoords(state.p1PermaOffset)),
           })
         | Two =>
           ReasonReact.Update({
             ...state,
             lastDrag: (pane, a),
             currentDrag: None,
-            p2PermaOffset: offset |. addCoords(state.p2PermaOffset),
+            p2PermaOffset: offset->(addCoords(state.p2PermaOffset)),
           })
         };
       }
     | Drag(coords) =>
       ReasonReact.Update({...state, currentDrag: Some(coords)})
-    | ToggleGlow => ReasonReact.Update({...state, glow: ! state.glow})
+    | ToggleGlow => ReasonReact.Update({...state, glow: !state.glow})
     | ToggleAmbientOcclusion =>
       ReasonReact.Update({
         ...state,
-        ambientOcclusion: ! state.ambientOcclusion,
+        ambientOcclusion: !state.ambientOcclusion,
       })
-    | ToggleBlur => ReasonReact.Update({...state, blur: ! state.blur})
-    | ToggleGrow => ReasonReact.Update({...state, grow: ! state.grow})
+    | ToggleBlur => ReasonReact.Update({...state, blur: !state.blur})
+    | ToggleGrow => ReasonReact.Update({...state, grow: !state.grow})
     | ToggleLightSource =>
-      ReasonReact.Update({...state, lightSource: ! state.lightSource})
+      ReasonReact.Update({...state, lightSource: !state.lightSource})
     | ToggleOverlapCrossfade =>
       ReasonReact.Update({
         ...state,
-        overlapCrossfade: ! state.overlapCrossfade,
+        overlapCrossfade: !state.overlapCrossfade,
       })
     | ToggleTransition =>
-      ReasonReact.Update({...state, transition: ! state.transition})
+      ReasonReact.Update({...state, transition: !state.transition})
     | ToggleAll =>
       if (allTogglesOn(state)) {
         ReasonReact.Update(updateAllToggles(state, false));
@@ -171,19 +171,17 @@ let make = _children => {
           self.send(Drag({x, y}));
         };
       });
-    window |. addEventListener("mousemove", cb);
+    window->(addEventListener("mousemove", cb));
   },
   render: ({state} as self) => {
-    let windowWidth = window |. outerWidth;
-    let windowHeight = window |. outerHeight;
+    let windowWidth = window->outerWidth;
+    let windowHeight = window->outerHeight;
     let zoomLevel =
-      (
-        document
-        |. getElementById("measurer")
-        |. Belt.Option.getExn
-        |. ReactDOMRe.domElementToObj
-      )##offsetWidth
-      /. (window |. innerWidth);
+      document
+      ->(getElementById("measurer"))
+      ->Belt.Option.getExn
+      ->ReactDOMRe.domElementToObj##offsetWidth
+      /. window->innerWidth;
 
     let transitionTiming = state.transition ? 0.2 : 0.;
 
@@ -209,19 +207,19 @@ let make = _children => {
       | (None, _) => {x: 0., y: 0.}
       | (Some(a), (_, b)) => minusCoords(a, b)
       };
-    let p1xy = p1InitialCoords |. addCoords(state.p1PermaOffset);
+    let p1xy = p1InitialCoords->(addCoords(state.p1PermaOffset));
     let {x: p1x, y: p1y} =
       switch (state.lastDrag) {
       | (One, _) =>
-        p1xy |. addCoords(draggingOffset) |. divCoords(zoomLevel)
-      | _ => p1xy |. divCoords(zoomLevel)
+        p1xy->(addCoords(draggingOffset))->(divCoords(zoomLevel))
+      | _ => p1xy->(divCoords(zoomLevel))
       };
-    let p2xy = p2InitialCoords |. addCoords(state.p2PermaOffset);
+    let p2xy = p2InitialCoords->(addCoords(state.p2PermaOffset));
     let {x: p2x, y: p2y} =
       switch (state.lastDrag) {
       | (Two, _) =>
-        p2xy |. addCoords(draggingOffset) |. divCoords(zoomLevel)
-      | _ => p2xy |. divCoords(zoomLevel)
+        p2xy->(addCoords(draggingOffset))->(divCoords(zoomLevel))
+      | _ => p2xy->(divCoords(zoomLevel))
       };
     let (p1ShadowX, p1ShadowY, p1ShadowBlur) =
       switch (state.lastDrag) {
@@ -418,7 +416,7 @@ let make = _children => {
         ~opacity=p1Dragged ? "1" : "0",
         (),
       )
-      |. ReactDOMRe.Style.unsafeAddProp("webkitClipPath", p1ClipPath);
+      ->(ReactDOMRe.Style.unsafeAddProp("webkitClipPath", p1ClipPath));
 
     let p2ClipPath = {j|inset($(p2ProjectedShadowToP1Top)px $(p2ProjectedShadowToP1Right)px $(p2ProjectedShadowToP1Bottom)px $(p2ProjectedShadowToP1Left)px round 8px)|j};
     let p2ProjectedShadowOnP1 =
@@ -434,7 +432,7 @@ let make = _children => {
         ~opacity=p2Dragged ? "1" : "0",
         (),
       )
-      |. ReactDOMRe.Style.unsafeAddProp("webkitClipPath", p2ClipPath);
+      ->(ReactDOMRe.Style.unsafeAddProp("webkitClipPath", p2ClipPath));
     /* */
     let p1Glow =
       ReactDOMRe.Style.make(
@@ -489,8 +487,14 @@ let make = _children => {
             (),
           )
         )>
-        <div>(ReasonReact.string("Only works on desktop. Drag the pictures around!"))</div>
-        <p></p>
+        <div>
+          (
+            ReasonReact.string(
+              "Only works on desktop. Drag the pictures around!",
+            )
+          )
+        </div>
+        <p />
         (makeToggle(state.glow, ToggleGlow, "Back glow (self shadow)"))
         (
           makeToggle(
@@ -540,8 +544,8 @@ let make = _children => {
         style=p1Overlay
         onMouseDown=(
           e => {
-            let x = ReactEventRe.Mouse.screenX(e) |. float_of_int;
-            let y = ReactEventRe.Mouse.screenY(e) |. float_of_int;
+            let x = ReactEvent.Mouse.screenX(e)->float_of_int;
+            let y = ReactEvent.Mouse.screenY(e)->float_of_int;
             self.send(Down(One, {x, y}));
           }
         )
@@ -552,8 +556,8 @@ let make = _children => {
         style=p2Overlay
         onMouseDown=(
           e => {
-            let x = ReactEventRe.Mouse.screenX(e) |. float_of_int;
-            let y = ReactEventRe.Mouse.screenY(e) |. float_of_int;
+            let x = ReactEvent.Mouse.screenX(e)->float_of_int;
+            let y = ReactEvent.Mouse.screenY(e)->float_of_int;
             self.send(Down(Two, {x, y}));
           }
         )
