@@ -416,7 +416,7 @@ let make = _children => {
         ~opacity=p1Dragged ? "1" : "0",
         (),
       )
-      ->(ReactDOMRe.Style.unsafeAddProp("webkitClipPath", p1ClipPath));
+      ->(ReactDOMRe.Style.unsafeAddProp("WebkitClipPath", p1ClipPath));
 
     let p2ClipPath = {j|inset($(p2ProjectedShadowToP1Top)px $(p2ProjectedShadowToP1Right)px $(p2ProjectedShadowToP1Bottom)px $(p2ProjectedShadowToP1Left)px round 8px)|j};
     let p2ProjectedShadowOnP1 =
@@ -432,7 +432,7 @@ let make = _children => {
         ~opacity=p2Dragged ? "1" : "0",
         (),
       )
-      ->(ReactDOMRe.Style.unsafeAddProp("webkitClipPath", p2ClipPath));
+      ->(ReactDOMRe.Style.unsafeAddProp("WebkitClipPath", p2ClipPath));
     /* */
     let p1Glow =
       ReactDOMRe.Style.make(

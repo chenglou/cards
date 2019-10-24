@@ -310,7 +310,7 @@ function make(_children) {
                     boxShadow: "" + (String(p1ShadowX) + ("px " + (String(p1ShadowY) + "px 100px black"))),
                     clipPath: p1ClipPath,
                     transition: match$29 ? "opacity 0.45s" : "none"
-                  }, "webkitClipPath", p1ClipPath);
+                  }, "WebkitClipPath", p1ClipPath);
               var p2ClipPath = "inset(" + (String(p2ProjectedShadowToP1Top) + ("px " + (String(p2ProjectedShadowToP1Right) + ("px " + (String(p2ProjectedShadowToP1Bottom) + ("px " + (String(p2ProjectedShadowToP1Left) + "px round 8px)")))))));
               var match$30 = p2Dragged && state[/* transition */10];
               var p2ProjectedShadowOnP1 = ReactDOMRe.Style[/* unsafeAddProp */1]({
@@ -323,7 +323,7 @@ function make(_children) {
                     boxShadow: "" + (String(p2ShadowX) + ("px " + (String(p2ShadowY) + "px 100px black"))),
                     clipPath: p2ClipPath,
                     transition: match$30 ? "opacity 0.45s" : "none"
-                  }, "webkitClipPath", p2ClipPath);
+                  }, "WebkitClipPath", p2ClipPath);
               var p1Glow = {
                 backgroundImage: "url(" + (String(p1Bg) + ")"),
                 height: "" + (String(300) + "px"),
